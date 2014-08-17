@@ -7,18 +7,37 @@
     pubsub_password: pikachu
   remote_user: xav
   tasks:
+  - name: notify start
+    uri: url=https://eliberty-hubot.herokuapp.com/publish
+      method=POST HEADER_Content-Type="application/x-www-form-urlencoded"
+      body="passwd={{pubsub_password}}&event=deploy.start&data=Received job to do"
   - name: deploy it
     git: repo=https://github.com/xleliberty/ansible-deploytest.git dest=/home/xav/deploytest
 
   - name: notify progress
     uri: url=https://eliberty-hubot.herokuapp.com/publish
       method=POST HEADER_Content-Type="application/x-www-form-urlencoded"
-      body="passwd={{pubsub_password}}&event=deploy.progress&data=Notify progress one"
+      body="passwd={{pubsub_password}}&event=deploy.progress&data=Cleaning up things"
+  - pause: seconds=10
   - name: notify progress2
     uri: url=https://eliberty-hubot.herokuapp.com/publish
       method=POST HEADER_Content-Type="application/x-www-form-urlencoded"
-      body="passwd={{pubsub_password}}&event=deploy.progress&data=Notify progress two"
-
+      body="passwd={{pubsub_password}}&event=deploy.progress&data=Fetching sources from Github"
+  - pause: seconds=10
+  - name: notify progress3
+    uri: url=https://eliberty-hubot.herokuapp.com/publish
+      method=POST HEADER_Content-Type="application/x-www-form-urlencoded"
+      body="passwd={{pubsub_password}}&event=deploy.progress&data=Executing Composer update"
+  - pause: seconds=10
+  - name: notify progress4
+    uri: url=https://eliberty-hubot.herokuapp.com/publish
+      method=POST HEADER_Content-Type="application/x-www-form-urlencoded"
+      body="passwd={{pubsub_password}}&event=deploy.progress&data=Warming Up Cache and deploying assets"
+  - pause: seconds=10
+  - name: notify finale
+    uri: url=https://eliberty-hubot.herokuapp.com/publish
+      method=POST HEADER_Content-Type="application/x-www-form-urlencoded"
+      body="passwd={{pubsub_password}}&event=deploy.success&data=all things done, beer me now!!!"
   - name: world notifier
     uri: url=https://eliberty-hubot.herokuapp.com/hubot/elib-deploy?environment={{env}}&project={{project}}&version={{version}}
       method=GET
